@@ -23,6 +23,10 @@ Enemy.prototype.constructor = Enemy;
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt) {
+    if (player.won) {
+        return;
+    }
+
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
@@ -40,13 +44,14 @@ var Player = function(startX, startY, travelDistance) {
   this.travelDistance = travelDistance;
   this.startX = startX;
   this.startY = startY;
+  this.won = false;
 }
 
 Player.prototype = Object.create(Character.prototype);
 Player.prototype.constructor = Player;
 
 Player.prototype.handleInput = function(key) {
-    if (!key) {
+    if (!key || this.won) {
         return;
     }
     if ((key == 'down') && (this.y <= 400)) {
@@ -61,6 +66,10 @@ Player.prototype.handleInput = function(key) {
 }
 
 Player.prototype.update = function() {
+    if (this.won) {
+        return;
+    }
+
     var playerTop = 75;
 
     for (var e = 0; e < allEnemies.length; e++) {
@@ -71,6 +80,11 @@ Player.prototype.update = function() {
             this.x = this.startX;
             this.y = this.startY;
         }
+    }
+
+    if (this.y < 0) {
+        console.log("Victory is mine, Trebek!");
+        this.won = true;
     }
 }
 
