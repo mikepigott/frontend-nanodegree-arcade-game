@@ -9,4 +9,4 @@ Pressing the up-arrow moves the character upward, left-arrow leftward, right-arr
 
 Enemies, once they walk past the right-most side of the screen, will reappear on the left-hand side.
 
-Good luck!
+Opening index.html will start the game. Good luck!

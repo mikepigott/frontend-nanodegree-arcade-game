@@ -1,3 +1,5 @@
+"use strict";
+
 // All of the sprites have a lot of transparent space, so the height
 // of the image does not reflect where it would collide with a player.
 // Likewise, the topY and bottomY must be supplied to accurately determine
@@ -10,17 +12,17 @@ var Character = function(sprite, startX, startY, topY, bottomY) {
     this.y = startY;
     this.topY = topY;
     this.bottomY = bottomY;
-}
+};
 
 // Draw the character on the screen
 Character.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-}
+};
 
 // Verify there are no collisions between bugs and players.
 // This must be called both when a bug is updated and a player
 // is updated, so moving its behavior into the parent class.
-Character.prototype.checkState = function() {
+Character.prototype.checkState = function(player, allEnemies) {
     var playerWidth = Resources.get(player.sprite).width;
 
     // Defeat.
@@ -46,7 +48,7 @@ Character.prototype.checkState = function() {
         player.x = player.startX;
         player.y = player.startY;
     }
-}
+};
 
 // Enemies our player must avoid.
 //
@@ -54,7 +56,7 @@ Character.prototype.checkState = function() {
 var Enemy = function(startX, startY, topY, bottomY, speed) {
     Character.call(this, 'images/enemy-bug.png', startX, startY, topY, bottomY);
     this.speed = speed;
-}
+};
 
 Enemy.prototype = Object.create(Character.prototype);
 Enemy.prototype.constructor = Enemy;
@@ -69,21 +71,18 @@ Enemy.prototype.update = function(dt) {
     if (this.x > 500) {
         this.x = -100;
     }
-
-    this.checkState();
-}
+};
 
 // travelDistance is how far the player moves in any direction when a key is pushed.
 // sprites contains the various sprites a player may use while playing, and spriteIndex
 // represents the current sprite in use.
-var Player = function(startX, startY, topY, bottomY, travelDistance, sprites, spriteIndex) {
-  Character.call(this, sprites[spriteIndex], startX, startY, topY, bottomY);
-  this.travelDistance = travelDistance;
-  this.startX = startX;
-  this.startY = startY;
-  this.sprites = sprites;
-  this.spriteIndex = spriteIndex;
-}
+var Player = function(startX, startY, topY, bottomY, sprites, spriteIndex) {
+    Character.call(this, sprites[spriteIndex], startX, startY, topY, bottomY);
+    this.startX = startX;
+    this.startY = startY;
+    this.sprites = sprites;
+    this.spriteIndex = spriteIndex;
+};
 
 Player.prototype = Object.create(Character.prototype);
 Player.prototype.constructor = Player;
@@ -94,34 +93,34 @@ Player.prototype.handleInput = function(key) {
         return;
     }
     if ((key == 'down') && (this.y <= 400)) {
-        this.y = this.y + this.travelDistance;
+        this.y = this.y + 83;
     } else if ((key == 'up') && (this.y >= 0)) {
-        this.y = this.y - this.travelDistance;
+        this.y = this.y - 83;
     } else if ((key == 'left') && (this.x >= 25)) {
-        this.x = this.x - this.travelDistance;
+        this.x = this.x - 101;
     } else if ((key == 'right') && (this.x <= 350)) {
-        this.x = this.x + this.travelDistance;
+        this.x = this.x + 101;
     } else if (key == 'player') {
         this.spriteIndex = (this.spriteIndex + 1) % this.sprites.length;
         this.sprite = this.sprites[this.spriteIndex];
     }
-}
+};
 
 Player.prototype.update = function() {
-    this.checkState();
-}
+    this.checkState(this, allEnemies);
+};
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 var allEnemies = [
     // new Enemy(startX, startY, topY, bottomY, speed)
-    new Enemy(0, 50,  77, 144,  50),
-    new Enemy(0, 150, 77, 144,  75),
-    new Enemy(0, 250, 77, 144, 100)
+    new Enemy(0,  60, 77, 144,  50),
+    new Enemy(0, 143, 77, 144,  75),
+    new Enemy(0, 226, 77, 144, 100)
 ];
 
-var player = buildPlayer(75, 425);
+var player = buildPlayer(202, 400);
 
 function buildPlayer(startX, startY) {
     var sprites = [
@@ -131,8 +130,8 @@ function buildPlayer(startX, startY) {
         'images/char-pink-girl.png',
         'images/char-princess-girl.png'
     ];
-    // new Player(startX, startY, topY, bottomY, distanceTraveled, sprites, spriteIndex)
-    return new Player(startX, startY, 63, 137, 25, sprites, 0);
+    // new Player(startX, startY, topY, bottomY, sprites, spriteIndex)
+    return new Player(startX, startY, 63, 137, sprites, 0);
 }
 
 // This listens for key presses and sends the keys to your
