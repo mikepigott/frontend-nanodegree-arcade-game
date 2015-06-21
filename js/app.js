@@ -114,8 +114,26 @@ Player.prototype.update = function() {
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-var allEnemies = new Array(new Enemy(0, 50, 77, 144, 50), new Enemy(0, 150, 77, 144, 75), new Enemy(0, 250, 77, 144, 100));
-var player = new Player(75, 425, 63, 137, 25, new Array('images/char-boy.png', 'images/char-cat-girl.png', 'images/char-horn-girl.png', 'images/char-pink-girl.png', 'images/char-princess-girl.png'), 0);
+var allEnemies = [
+    // new Enemy(startX, startY, topY, bottomY, speed)
+    new Enemy(0, 50,  77, 144,  50),
+    new Enemy(0, 150, 77, 144,  75),
+    new Enemy(0, 250, 77, 144, 100)
+];
+
+var player = buildPlayer(75, 425);
+
+function buildPlayer(startX, startY) {
+    var sprites = [
+        'images/char-boy.png',
+        'images/char-cat-girl.png',
+        'images/char-horn-girl.png',
+        'images/char-pink-girl.png',
+        'images/char-princess-girl.png'
+    ];
+    // new Player(startX, startY, topY, bottomY, distanceTraveled, sprites, spriteIndex)
+    return new Player(startX, startY, 63, 137, 25, sprites, 0);
+}
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
